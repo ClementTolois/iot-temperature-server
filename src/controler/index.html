@@ -110,7 +110,7 @@
                     }
                     this.chart.data.datasets.forEach((dataset) => {
                         dataset.data.push(data.val);
-                        if (datasets.data.length >= 10) {
+                        if (dataset.data.length >= 10) {
                             dataset.data.shift();
                         }
                     });
