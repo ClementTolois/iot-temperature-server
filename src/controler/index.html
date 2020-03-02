@@ -105,13 +105,13 @@
                     // this.dateList.push(data.date)
                     console.log('la')
                     this.chart.data.labels.push(data.date);
-                    if (this.chart.data.datasets.length >= 10) {
-                            this.data.labels.shift();
+                    if (this.chart.data.labels.length >= 10) {
+                            this.chart.data.labels.shift();
                     }
                     this.chart.data.datasets.forEach((dataset) => {
                         dataset.data.push(data.val);
-                        if (this.chart.data.datasets.length >= 10) {
-                            this.dataset.dataset.shift();
+                        if (this.chart.data.datasets.data.length >= 10) {
+                            dataset.data.shift();
                         }
                     });
                     this.chart.update();
