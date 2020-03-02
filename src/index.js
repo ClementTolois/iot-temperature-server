@@ -6,62 +6,60 @@ var express = require('express')
 server.listen(process.env.PORT || 8080);
 
 app.use('/public', express.static(__dirname + '/controler/assets'));
-if(process.env.PORT){
-    app.get('/gyrophare', function (req, res) {
-        res.sendFile(__dirname + '/controler/gyrophare.html');
-    });
-    app.get('/', function (req, res) {
-        res.sendFile(__dirname + '/controler/index.html');
-    });
-} else {
-    app.get('/gyrophare', function (req, res) {
-        res.sendFile(__dirname + '/controler/gyrophareL.html');
-    });
-    app.get('/', function (req, res) {
-        res.sendFile(__dirname + '/controler/indexL.html');
-    });
-}
+app.get('/gyrophare', function (req, res) {
+    res.sendFile(__dirname + '/controler/gyrophare.html');
+});
+app.get('/', function (req, res) {
+    res.sendFile(__dirname + '/controler/home.html');
+});
+app.get('/app', function (req, res) {
+    res.sendFile(__dirname + '/controler/app.html');
+});
 
-io.on('connection',(socket) => {
+io.on('connection', (socket) => {
     console.log('client connecté')
     // ! Identify receivers
-    socket.on('receiver',() => {
+    socket.on('receiver', () => {
         console.log('identification dun receiver');
         socket.join('receiver')
     })
     // ! Processing gyrophare actions
     // * getStatus
     // * Turn On
-    socket.on('turnOn',() => {
+    socket.on('turnOn', () => {
         console.log('turnOn')
         io.to('receiver').emit('turnOn');
     })
     // * Turn Off
-    socket.on('turnOff',() => {
+    socket.on('turnOff', () => {
         console.log('turnOff')
         io.to('receiver').emit('turnOff');
     })
     // * Light On
-    socket.on('lightOn',() => {
+    socket.on('lightOn', () => {
         console.log('light on')
-        socket.broadcast.emit('lightStatus',{status:'on'});
+        socket.broadcast.emit('lightStatus', {
+            status: 'on'
+        });
     })
     // * Light Off
-    socket.on('lightOff',() => {
+    socket.on('lightOff', () => {
         console.log('light off')
-        socket.broadcast.emit('lightStatus',{status:'off'});
+        socket.broadcast.emit('lightStatus', {
+            status: 'off'
+        });
     })
     // * Btn status
-    socket.on('btnStatus',(data) => {
+    socket.on('btnStatus', (data) => {
         console.log('btn status');
-        socket.broadcast.emit('btnStatus',data)
+        socket.broadcast.emit('btnStatus', data)
     })
     // ! Processing temperature actions
-    socket.on('newTemperature',(data) => {
+    socket.on('newTemperature', (data) => {
         console.log(data)
-        socket.broadcast.emit('newTemperature',data)
+        socket.broadcast.emit('newTemperature', data)
     })
-    socket.on('newColor',(data) => {
-        socket.broadcast.emit('newColor',data)
+    socket.on('newColor', (data) => {
+        socket.broadcast.emit('newColor', data)
     })
 })
