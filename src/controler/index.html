@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet"
+        href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css"
+        integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+        integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous">
+    </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js"
+        integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+    <script src="http://127.0.0.1:8080/public/socket.io-client.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- perso -->
+    <link rel="stylesheet" href="http://127.0.0.1:8080/public/style.css">
+</head>
+
+<body>
+    <section id="container">
+        <!-- <p>{{ temperatureList }}</p> -->
+        <canvas id="myChart" width="auto" height="100px"></canvas>
+        <section class="row">
+            <div class="col-sm-4">
+                RED {{ red }}
+                <input type="range" min="0" max="1023" step="10" value="0" v-model="red">
+            </div>
+            <div class="col-sm-4">
+                GREEN {{ green }}
+                <input type="range" min="0" max="1023" step="10" value="0" v-model="green">
+            </div>
+            <div class="col-sm-4">
+                BLUE {{ blue }}
+                <input type="range" min="0" max="1023" step="10" value="0" v-model="blue">
+            </div>
+        </section>
+    </section>
+
+    <script>
+        new Vue({
+            el: '#container',
+            data() {
+                return {
+                    socket: null,
+                    dateList: [],
+                    temperatureList: [],
+                    chart: null,
+                    ctx: null,
+                    red:0,
+                    green:0,
+                    blue:0
+                }
+            },
+            mounted() {
+                // this.socket = io('https://gyrophare.herokuapp.com/')
+                this.socket = io('http://127.0.0.1:8080/')
+                this.socket.on('connect', () => {
+                    console.log('connected to the remote server');
+                })
+                this.socket.on('newTemperature', (data) => {
+                    // this.temperatureList.push(data.val)
+                    // this.dateList.push(data.date)
+                    console.log('la')
+                    this.chart.data.labels.push(data.date);
+                    this.chart.data.datasets.forEach((dataset) => {
+                        dataset.data.push(data.val);
+                    });
+                    this.chart.update();
+                })
+                this.ctx = document.getElementById('myChart').getContext('2d');
+                this.chart = new Chart(this.ctx, {
+                    // The type of chart we want to create
+                    type: 'line',
+                    // The data for our dataset
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Historique de la température',
+                            backgroundColor: 'rgba(255, 99, 132,0)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            data: []
+                        }]
+                    },
+
+                    // Configuration options go here
+                    options: {}
+                });
+            },
+            computed: {
+                color(){
+                    return {
+                        r:this.red,
+                        g:this.green,
+                        b:this.blue
+                    }
+                },
+                temperature() {
+                    if (this.temperatureList.length > 0) {
+                        return this.temperatureList[this.temperatureList.length - 1]
+                    } else {
+                        return null
+                    }
+                }
+            },
+            watch:{
+                color(val){
+                    this.socket.emit('newColor',val)
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
