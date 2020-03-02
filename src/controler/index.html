@@ -20,10 +20,10 @@
         integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
-    <script src="http://127.0.0.1:8080/public/socket.io-client.js"></script>
+    <script src="https://connected-objects-lpdev.herokuapp.com/public/socket.io-client.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <!-- perso -->
-    <link rel="stylesheet" href="http://127.0.0.1:8080/public/style.css">
+    <link rel="stylesheet" href="https://connected-objects-lpdev.herokuapp.com/public/style.css">
 </head>
 
 <body>
@@ -62,8 +62,8 @@
                 }
             },
             mounted() {
-                // this.socket = io('https://gyrophare.herokuapp.com/')
-                this.socket = io('http://127.0.0.1:8080/')
+                this.socket = io('https://connected-objects-lpdev.herokuapp.com/');
+                //this.socket = io('http://127.0.0.1:8080/')
                 this.socket.on('connect', () => {
                     console.log('connected to the remote server');
                 })
