@@ -6,12 +6,21 @@ var express = require('express')
 server.listen(process.env.PORT || 8080);
 
 app.use('/public', express.static(__dirname + '/controler/assets'));
-app.get('/gyrophare', function (req, res) {
-    res.sendFile(__dirname + '/controler/gyrophare.html');
-});
-app.get('/', function (req, res) {
-    res.sendFile(__dirname + '/controler/index.html');
-});
+if(process.env.PORT){
+    app.get('/gyrophare', function (req, res) {
+        res.sendFile(__dirname + '/controler/gyrophare.html');
+    });
+    app.get('/', function (req, res) {
+        res.sendFile(__dirname + '/controler/index.html');
+    });
+} else {
+    app.get('/gyrophare', function (req, res) {
+        res.sendFile(__dirname + '/controler/gyrophareL.html');
+    });
+    app.get('/', function (req, res) {
+        res.sendFile(__dirname + '/controler/indexL.html');
+    });
+}
 
 io.on('connection',(socket) => {
     console.log('client connecté')

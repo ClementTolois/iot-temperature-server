@@ -81,7 +81,8 @@
                }
            },
            mounted(){
-            this.socket = io('https://connected-objects-lpdev.herokuapp.com/');
+            // this.socket = io('https://gyrophare.herokuapp.com/')
+            this.socket = io('http://127.0.0.1:8080/')
             this.socket.on('connect', () => {
                 console.log('connected to the remote server');
                 this.socket.emit('getStatus');
