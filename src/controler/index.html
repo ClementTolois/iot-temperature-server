@@ -105,8 +105,14 @@
                     // this.dateList.push(data.date)
                     console.log('la')
                     this.chart.data.labels.push(data.date);
+                    if (this.chart.data.datasets.length >= 10) {
+                            this.data.labels.shift();
+                    }
                     this.chart.data.datasets.forEach((dataset) => {
                         dataset.data.push(data.val);
+                        if (this.chart.data.datasets.length >= 10) {
+                            this.dataset.dataset.shift();
+                        }
                     });
                     this.chart.update();
                 })
@@ -134,9 +140,9 @@
                     let r;
                     let g;
                     let b;
-                    (this.red) ? r = 1 : r = 0;
-                    (this.green) ? g = 1 : g = 0;
-                    (this.blue) ? b = 1 : b = 0;
+                    (this.red) ? r = 1: r = 0;
+                    (this.green) ? g = 1: g = 0;
+                    (this.blue) ? b = 1: b = 0;
                     return {
                         r: r,
                         g: g,
